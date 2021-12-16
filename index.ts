@@ -1,4 +1,5 @@
 import '@logseq/libs'
+import styles from "./index.css";
 
 const Arena = require("are.na");
 
@@ -8,16 +9,7 @@ async function main () {
 
   let apiToken = logseq.settings.arenaToken
 
-  // TODO import index.css?
-  logseq.provideStyle(`
-  h3.arena-chan-title.private {
-    color: red;
-  }
-
-  h3.arena-chan-title.public {
-      color: #00FF00;
-  }
-  `)
+  logseq.provideStyle(styles)
 
   // TODO ask for token
   // if (!apiToken) {

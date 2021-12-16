@@ -14,7 +14,8 @@
   },
   "devDependencies": {
     "@logseq/libs": "^0.0.1-alpha.32",
-    "parcel": "^2.0.0"
+    "parcel": "^2.0.0",
+    "parcel-plugin-css-to-string": "^2.5.5"
   },
   "dependencies": {
     "@logseq/libs": "^0.0.1-alpha.31",
