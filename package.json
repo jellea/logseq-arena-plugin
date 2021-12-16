@@ -1,0 +1,28 @@
+{
+  "name": "logseq-arena-plugin",
+  "version": "0.0.1",
+  "description": "Embed Are.na channels.",
+  "main": "dist/index.html",
+  "targets": {
+    "main": false
+  },
+  "author": "Jelle",
+  "license": "MIT",
+  "scripts": {
+    "dev": "parcel ./index.html --public-url ./",
+    "build": "parcel build --public-url ./ --no-source-maps index.html"
+  },
+  "devDependencies": {
+    "@logseq/libs": "^0.0.1-alpha.32",
+    "parcel": "^2.0.0"
+  },
+  "dependencies": {
+    "@logseq/libs": "^0.0.1-alpha.31",
+    "are.na": "git://github.com/absentees/arena-js.git#2c24acb0b640ae8e7cc60bcd0fd277c6977d7408"
+  },
+  "logseq": {
+    "id": "_arena-pa3u4fb8e",
+    "title": "Are.na plugin",
+    "icon": "./logo.png"
+  }
+}
