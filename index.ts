@@ -69,7 +69,15 @@ async function main () {
 
     arena.channel(slug).get().then(channel=>{
       console.log(channel.contents)
-      let blocks = channel.contents.map(b=>`<div class="arena-block">${b.title}</div>`).join("")
+
+      // XXX TODO: link blocks to their are.na page
+      // DB: tried adding  href="https://are.na/block/${b.id}" to the link but produced strange results: prompt to reload logseq when clicked
+      let blocks = channel.contents.map(b=>`
+        <a class="arena-block" href="https://are.na/block/${b.id}">
+          <img src="${b.image ? b.image.square.url : ''}">
+          ${b.title}
+        </a>
+      `).join("")
       console.log(blocks)
       logseq.provideUI({
         key: 'arena-channel',
