@@ -9,7 +9,31 @@ async function main () {
 
   let apiToken = logseq.settings.arenaToken
 
-  logseq.provideStyle(styles)
+  // XXX remove once I manage to apply index.css properly
+  logseq.provideStyle(`
+  h3.arena-chan-title.private {
+    color: red;
+  }
+
+  h3.arena-chan-title.public {
+      color: #00FF00;
+  }
+
+  .arena-block {
+    display: inline-block;
+    width: 8rem;
+    height: 8rem;
+    margin: 0 5px 5px 0;
+    border: 1px solid #FFFFFF55;
+    font-size: 0.7em;
+    line-height: 100%;
+  }
+  .arena-block-grid {
+    display: flex;
+    max-width: 50em;
+    flex-wrap: wrap;
+  }
+  `)
 
   // TODO ask for token
   // if (!apiToken) {
@@ -45,7 +69,7 @@ async function main () {
 
     arena.channel(slug).get().then(channel=>{
       console.log(channel.contents)
-      let blocks = channel.contents.map(b=>`<li>${b.title}</li>`).join("")
+      let blocks = channel.contents.map(b=>`<div class="arena-block">${b.title}</div>`).join("")
       console.log(blocks)
       logseq.provideUI({
         key: 'arena-channel',
@@ -55,7 +79,9 @@ async function main () {
           <p>${!channel.metadata ? '' : channel.metadata.description}</p>
           <p><a href="https://are.na/${channel.owner.slug}/${channel.slug}">Are.na channel</a> - ${channel.length} Blocks</p>
           <p></p>
-          <ul>${blocks}</ul>
+          <div class="arena-block-grid">
+            ${blocks}
+          </div>
         </div>
         `,
       })
