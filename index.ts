@@ -50,7 +50,7 @@ async function main () {
           <h3>Are.na Channel: ${channel.title}</h3>
           <p>Number of blocks: ${channel.length}</p>
           <p>Channel status: ${channel.status}</p>
-          <p>Description: ${channel.metadata.description}</p>
+          <p>Description: ${!channel.metadata ? '' : channel.metadata.description}</p>
           <p><a href="https://are.na/${channel.owner.slug}/${channel.slug}">link</a></p>
           <ul>${blocks}</ul>
         </div>
