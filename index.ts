@@ -1,5 +1,5 @@
 import '@logseq/libs'
-import styles from "./index.css";
+// import styles from "./index.css";
 
 const Arena = require("are.na");
 
