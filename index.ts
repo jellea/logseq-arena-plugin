@@ -22,11 +22,23 @@ async function main () {
   .arena-block {
     display: inline-block;
     width: 8rem;
-    height: 8rem;
-    margin: 0 5px 5px 0;
-    border: 1px solid #FFFFFF55;
     font-size: 0.7em;
     line-height: 100%;
+    margin: 0 10px 10px 0;
+  }
+  .arena-block-content {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 8rem;
+    vertical-align: middle;
+    border: 1px solid #FFFFFF55;
+  }
+  .arena-block-title {
+    margin-top: 5px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
   }
   .arena-block-grid {
     display: flex;
@@ -68,17 +80,17 @@ async function main () {
     let slug = regex.exec(channelUrl.trim())[1]
 
     arena.channel(slug).get().then(channel=>{
-      console.log(channel.contents)
+      console.log(channel)
 
       // XXX TODO: link blocks to their are.na page
       // DB: tried adding  href="https://are.na/block/${b.id}" to the link but produced strange results: prompt to reload logseq when clicked
       let blocks = channel.contents.map(b=>`
         <a class="arena-block" href="https://are.na/block/${b.id}">
-          <img src="${b.image ? b.image.square.url : ''}">
-          ${b.title}
+          <div class="arena-block-content"><img src="${b.image ? b.image.square.url : ''}"></div>
+          <div class="arena-block-title">${b.title}</div>
         </a>
       `).join("")
-      console.log(blocks)
+      //console.log(blocks)
       logseq.provideUI({
         key: 'arena-channel',
         slot, template: `
