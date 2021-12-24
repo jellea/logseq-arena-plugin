@@ -1,10 +1,12 @@
 import '@logseq/libs'
 import styles from './styles.inline.css';
+import {registerSlashCommands} from './slash-commands';
 
 const Arena = require("are.na");
 
 async function main () {
   // You might need to set the Arena personal token manually
+  // Generator Personal Access token here: https://dev.are.na/users/sign_in
   // logseq.updateSettings({arenaToken:""})
 
   let apiToken = logseq.settings.arenaToken
@@ -13,48 +15,29 @@ async function main () {
 
   logseq.provideStyle(styles)
 
-  // TODO ask for token
-  // if (!apiToken) {
-  //   apiToken = window.prompt("Please fill in your arena personal token")
-  //   logseq.updateSettings({arenaToken:apiToken})
-  // }
-
   const arena = new Arena({accessToken: apiToken});
 
-  // TODO fetch all channel names for auto complete
-  // arena.me().get().then(user => {
-  //   console.log(user)
-  //   arena.user(user.id).channels().then(channels=>{
-  //     console.log(channels)
-  //   })
-  // });
+  registerSlashCommands()
 
-  // TODO registering of slash commands doesn't seem to work currently?
-  logseq.Editor.registerSlashCommand('Embed Are.na Channel', async () => {
-    await logseq.Editor.insertAtEditingCursor(
-      `{{renderer :arena-channel, channel}}`,
-    )
-    logseq.App.showMsg('/arena-channel installed')
-  })
-
+  // Needed to be able to open external links
+  // Use by adding the following html attributes data-url="https://are.na/block/${id}" data-on-click="openLink"
   logseq.provideModel({
     openLink(e) {
-      console.log(e)
       const { url } = e.dataset
       logseq.App.openExternalLink(url)
     }
-   })
+  })
   
   function renderBlock(b) {
     let { id, image, title } = b
     return image ? `
-          <div class="arena-block" data-url="https://are.na/block/${id}" data-on-click="openLink" data-rect>
+          <div class="arena-block" data-url="https://are.na/block/${id}" data-on-click="openLink">
             <div class="arena-block-content"><img src="${image.square.url}"></div>
             <div class="arena-block-title">${title}</div>
           </div>
         `
       : `
-      <div class="arena-block" data-url="https://are.na/block/${id}" data-on-click="openLink" data-rect>
+      <div class="arena-block" data-url="https://are.na/block/${id}" data-on-click="openLink">
         <div class="arena-block-content">'${b.content}'</div>
         <div class="arena-block-title">${title}</div>
       </div>
@@ -99,7 +82,6 @@ async function main () {
     }).catch((error) => {
       renderErrorMessage(slot)
     })
-  
   }
 
   function renderSingleBlock(slot, payload){
