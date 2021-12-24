@@ -11,8 +11,6 @@ async function main () {
 
   let apiToken = logseq.settings.arenaToken
   
-  console.log("st", styles)
-
   logseq.provideStyle(styles)
 
   const arena = new Arena({accessToken: apiToken});
@@ -62,8 +60,6 @@ async function main () {
     let slug = regex.exec(channelUrl.trim())[1]
 
     arena.channel(slug).get().then(channel=>{
-      console.log("ch",channel)
-
       let blocks = channel.contents.map(renderBlock).join("")
       logseq.provideUI({
         key: `arena-channel`,
@@ -96,6 +92,7 @@ async function main () {
         slot, template: `
         <div class="arena-plugin-wrapper">
           <h3 class="arena-chan-title">Are.na block: ${block.title}</h3>
+          <p><a data-on-click="openLink" data-url="${blockUrl}">open in are.na</a></p>
           <div class="arena-block-grid">
             ${renderBlock(block)}
           </div>
