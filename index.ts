@@ -84,16 +84,16 @@ async function main () {
   function blockRender(b) {
     let { id, image, title } = b
     return image ? `
-          <a class="arena-block" data-url="https://are.na/block/${id}" data-on-click="openLink" data-rect>
+          <div class="arena-block" data-url="https://are.na/block/${id}" data-on-click="openLink" data-rect>
             <div class="arena-block-content"><img src="${image.square.url}"></div>
             <div class="arena-block-title">${title}</div>
-          </a>
+          </div>
         `
       : `
-      <a class="arena-block" data-url="https://are.na/block/${id}" data-on-click="openLink" data-rect>
+      <div class="arena-block" data-url="https://are.na/block/${id}" data-on-click="openLink" data-rect>
         <div class="arena-block-content">'${b.content}'</div>
         <div class="arena-block-title">${title}</div>
-      </a>
+      </div>
       `
   }
 
@@ -107,10 +107,7 @@ async function main () {
     arena.channel(slug).get().then(channel=>{
       console.log(channel)
 
-      // XXX TODO: link blocks to their are.na page
-      // DB: tried adding  href="https://are.na/block/${b.id}" to the link but produced strange results: prompt to reload logseq when clicked
       let blocks = channel.contents.map(blockRender).join("")
-      //console.log(blocks)
       logseq.provideUI({
         key: 'arena-channel',
         slot, template: `
