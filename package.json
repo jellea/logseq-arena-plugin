@@ -9,7 +9,7 @@
   "author": "Jelle",
   "license": "MIT",
   "scripts": {
-    "dev": "parcel ./index.html --public-url ./",
+    "dev": "parcel index.html --public-url ./ --dist-dir dist",
     "build": "parcel build --public-url ./ --no-source-maps index.html"
   },
   "devDependencies": {

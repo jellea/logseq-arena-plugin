@@ -19,6 +19,13 @@ async function main () {
       color: #00FF00;
   }
 
+  .arena-plugin-wrapper {
+    background-color: var(--ls-quaternary-background-color);
+    border-radius: 5px;
+    padding: 10px;
+    white-space: normal;
+  }
+
   .arena-block {
     display: inline-block;
     width: 8rem;
@@ -81,7 +88,7 @@ async function main () {
     }
    })
   
-  function blockRender(b) {
+  function renderBlock(b) {
     let { id, image, title } = b
     return image ? `
           <div class="arena-block" data-url="https://are.na/block/${id}" data-on-click="openLink" data-rect>
@@ -97,24 +104,34 @@ async function main () {
       `
   }
 
-  logseq.App.onMacroRendererSlotted(async({ slot, payload}) => {
+  function renderErrorMessage(slot){
+    logseq.provideUI({
+      key: 'arena-error',
+      slot, template: `
+      <div class="arena-plugin-wrapper">
+        <h4>Error rendering are.na channel or block</h3>
+      </div>
+      `,
+    })
+  }
+
+  function renderChannel(slot, payload) {
     let [type, channelUrl] = payload.arguments
-    if (type !== ':arena-channel') return
 
     const regex = /https:\/\/w*\.?are\.na\/.+\/(.+)\/?/gm;
     let slug = regex.exec(channelUrl.trim())[1]
 
     arena.channel(slug).get().then(channel=>{
-      console.log(channel)
+      console.log("ch",channel)
 
-      let blocks = channel.contents.map(blockRender).join("")
+      let blocks = channel.contents.map(renderBlock).join("")
       logseq.provideUI({
-        key: 'arena-channel',
+        key: `arena-channel`,
         slot, template: `
-        <div style="background-color:var(--ls-quaternary-background-color);border-radius:5px;padding:10px;white-space:normal;">
-          <h3 class="arena-chan-title ${channel.status}">${channel.title}</h3>
+        <div class="arena-plugin-wrapper">
+          <h3 class="arena-chan-title ${channel.status}">Are.na channel: ${channel.title}</h3>
           <p>${!channel.metadata ? '' : channel.metadata.description}</p>
-          <p><a data-on-click="openLink" data-url="https://are.na/${channel.owner.slug}/${channel.slug}">Are.na channel</a> - ${channel.length} Blocks</p>
+          <p>${channel.length} blocks - <a data-on-click="openLink" data-url="https://are.na/${channel.owner.slug}/${channel.slug}">open in are.na</a></p>
           <p></p>
           <div class="arena-block-grid">
             ${blocks}
@@ -122,7 +139,45 @@ async function main () {
         </div>
         `,
       })
+    }).catch((error) => {
+      renderErrorMessage(slot)
     })
+  
+  }
+
+  function renderSingleBlock(slot, payload){
+    let [type, blockUrl] = payload.arguments
+
+    const regex = /https:\/\/w*\.?are\.na\/block\/(.+)\/?/gm;
+    let slug = regex.exec(blockUrl.trim())[1]
+
+    arena.block(slug).get().then(block=>{
+      logseq.provideUI({
+        key: `arena-block`,
+        slot, template: `
+        <div class="arena-plugin-wrapper">
+          <h3 class="arena-chan-title">Are.na block: ${block.title}</h3>
+          <div class="arena-block-grid">
+            ${renderBlock(block)}
+          </div>
+        </div>
+        `
+        ,
+      })
+    }).catch((error) => {
+      renderErrorMessage(slot)
+    })
+  }
+
+  logseq.App.onMacroRendererSlotted(async({slot, payload}) => {
+    let [type] = payload.arguments
+      
+    switch(type){
+      case ':arena-channel':
+        return renderChannel(slot, payload)
+      case ':arena-block':
+        return renderSingleBlock(slot, payload)
+    }
   })
 }
 
