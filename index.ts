@@ -1,5 +1,5 @@
 import '@logseq/libs'
-// import styles from "./index.css";
+import styles from './styles.inline.css';
 
 const Arena = require("are.na");
 
@@ -8,53 +8,10 @@ async function main () {
   // logseq.updateSettings({arenaToken:""})
 
   let apiToken = logseq.settings.arenaToken
+  
+  console.log("st", styles)
 
-  // XXX remove once I manage to apply index.css properly
-  logseq.provideStyle(`
-  h3.arena-chan-title.private {
-    color: red;
-  }
-
-  h3.arena-chan-title.public {
-      color: #00FF00;
-  }
-
-  .arena-plugin-wrapper {
-    background-color: var(--ls-quaternary-background-color);
-    border-radius: 5px;
-    padding: 10px;
-    white-space: normal;
-  }
-
-  .arena-block {
-    display: inline-block;
-    width: 8rem;
-    font-size: 0.7em;
-    line-height: 100%;
-    margin: 0 10px 10px 0;
-    overflow: hidden;
-  }
-  .arena-block-content {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 8rem;
-    vertical-align: middle;
-    border: 1px solid #FFFFFF55;
-    overflow: hidden;
-  }
-  .arena-block-title {
-    margin-top: 5px;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-  }
-  .arena-block-grid {
-    display: flex;
-    max-width: 50em;
-    flex-wrap: wrap;
-  }
-  `)
+  logseq.provideStyle(styles)
 
   // TODO ask for token
   // if (!apiToken) {
