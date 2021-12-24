@@ -25,6 +25,7 @@ async function main () {
     font-size: 0.7em;
     line-height: 100%;
     margin: 0 10px 10px 0;
+    overflow: hidden;
   }
   .arena-block-content {
     display: flex;
@@ -33,6 +34,7 @@ async function main () {
     height: 8rem;
     vertical-align: middle;
     border: 1px solid #FFFFFF55;
+    overflow: hidden;
   }
   .arena-block-title {
     margin-top: 5px;
@@ -71,6 +73,29 @@ async function main () {
     logseq.App.showMsg('/arena-channel installed')
   })
 
+  logseq.provideModel({
+    openLink(e) {
+      console.log(e)
+      const { url } = e.dataset
+      logseq.App.openExternalLink(url)
+    }
+   })
+  
+  function blockRender(b) {
+    let { id, image, title } = b
+    return image ? `
+          <a class="arena-block" data-url="https://are.na/block/${id}" data-on-click="openLink" data-rect>
+            <div class="arena-block-content"><img src="${image.square.url}"></div>
+            <div class="arena-block-title">${title}</div>
+          </a>
+        `
+      : `
+      <a class="arena-block" data-url="https://are.na/block/${id}" data-on-click="openLink" data-rect>
+        <div class="arena-block-content">'${b.content}'</div>
+        <div class="arena-block-title">${title}</div>
+      </a>
+      `
+  }
 
   logseq.App.onMacroRendererSlotted(async({ slot, payload}) => {
     let [type, channelUrl] = payload.arguments
@@ -84,12 +109,7 @@ async function main () {
 
       // XXX TODO: link blocks to their are.na page
       // DB: tried adding  href="https://are.na/block/${b.id}" to the link but produced strange results: prompt to reload logseq when clicked
-      let blocks = channel.contents.map(b=>`
-        <a class="arena-block" href="https://are.na/block/${b.id}">
-          <div class="arena-block-content"><img src="${b.image ? b.image.square.url : ''}"></div>
-          <div class="arena-block-title">${b.title}</div>
-        </a>
-      `).join("")
+      let blocks = channel.contents.map(blockRender).join("")
       //console.log(blocks)
       logseq.provideUI({
         key: 'arena-channel',
@@ -97,7 +117,7 @@ async function main () {
         <div style="background-color:var(--ls-quaternary-background-color);border-radius:5px;padding:10px;white-space:normal;">
           <h3 class="arena-chan-title ${channel.status}">${channel.title}</h3>
           <p>${!channel.metadata ? '' : channel.metadata.description}</p>
-          <p><a href="https://are.na/${channel.owner.slug}/${channel.slug}">Are.na channel</a> - ${channel.length} Blocks</p>
+          <p><a data-on-click="openLink" data-url="https://are.na/${channel.owner.slug}/${channel.slug}">Are.na channel</a> - ${channel.length} Blocks</p>
           <p></p>
           <div class="arena-block-grid">
             ${blocks}
