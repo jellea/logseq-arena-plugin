@@ -25,21 +25,29 @@ async function main () {
       logseq.App.openExternalLink(url)
     }
   })
+
+  logseq.provideModel({
+    addBlockReference(e) {
+      const { logseqBlockUuid, arenaBlockId } = e.dataset
+      logseq.Editor.insertBlock(logseqBlockUuid, `{{renderer :arena-block, https://www.are.na/block/${arenaBlockId}}}`, { before: false })
+    }
+  })
   
-  function renderBlock(b) {
+  function renderBlock(b, logseqUuid) {
     let { id, image, title } = b
     return image ? `
           <div class="arena-block" data-url="https://are.na/block/${id}" data-on-click="openLink">
             <div class="arena-block-content"><img src="${image.square.url}"></div>
             <div class="arena-block-title">${title}</div>
+            ${ logseqUuid ? `<a data-arena-block-id="${id}" data-logseq-block-uuid="${logseqUuid}" data-on-click="addBlockReference" title="Add reference to block in Logseq"><i class="ti ti-layers-linked"></i></a>` : ''}
+          </div>
+        ` : `
+          <div class="arena-block" data-url="https://are.na/block/${id}" data-on-click="openLink">
+            <div class="arena-block-content">'${b.content}'</div>
+            <div class="arena-block-title">${title}</div>
+            ${ logseqUuid ? `<a data-arena-block-id="${id}" data-logseq-block-uuid="${logseqUuid}" data-on-click="addBlockReference" title="Add reference to block in Logseq"><i class="ti ti-layers-linked"></i></a>` : ''}
           </div>
         `
-      : `
-      <div class="arena-block" data-url="https://are.na/block/${id}" data-on-click="openLink">
-        <div class="arena-block-content">'${b.content}'</div>
-        <div class="arena-block-title">${title}</div>
-      </div>
-      `
   }
 
   function renderErrorMessage(slot){
@@ -58,9 +66,11 @@ async function main () {
 
     const regex = /https:\/\/w*\.?are\.na\/.+\/(.+)\/?/gm;
     let slug = regex.exec(channelUrl.trim())[1]
+    
+    const renderBlockPartial = block => renderBlock(block, payload.uuid)
 
     arena.channel(slug).get().then(channel=>{
-      let blocks = channel.contents.map(renderBlock).join("")
+      let blocks = channel.contents.map(renderBlockPartial).join("")
       logseq.provideUI({
         key: `arena-channel`,
         slot, template: `
@@ -94,7 +104,7 @@ async function main () {
           <h3 class="arena-chan-title">Are.na block: ${block.title}</h3>
           <p><a data-on-click="openLink" data-url="${blockUrl}">open in are.na</a></p>
           <div class="arena-block-grid">
-            ${renderBlock(block)}
+            ${renderBlock(block, undefined)}
           </div>
         </div>
         `
