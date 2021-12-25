@@ -5,10 +5,40 @@
   <meta name="viewport"
         content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
   <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <link rel="stylesheet" href="./modal.css">
   <title>Document</title>
 </head>
 <body>
-<div id="app"></div>
+<div id="app">
+  <br><br>
+  
+  <div class="modal">
+    <div style="display: flex; flex-direction: row; align-items: center; justify-content: space-between;">
+      <div style="display: flex; align-items: center;">
+        <svg version="1.1" id="arenalogo" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="53px" height="30px" viewBox="0 0 150.38 88.986" enable-background="new 0 0 150.38 88.986" xml:space="preserve"> <path fill="white" d="M148.931,62.356l-20.848-16.384c-1.276-1-1.276-2.642,0-3.645l20.848-16.381c1.279-1.001,1.812-2.694,1.187-3.76  c-0.626-1.061-2.374-1.44-3.88-0.838l-24.789,9.873c-1.508,0.603-2.928-0.222-3.154-1.831l-3.727-26.467  C114.34,1.317,113.132,0,111.879,0c-1.248,0-2.457,1.317-2.681,2.925l-3.73,26.467c-0.228,1.609-1.646,2.434-3.155,1.831  l-24.38-9.711c-1.512-0.602-3.975-0.602-5.483,0l-24.383,9.711c-1.508,0.603-2.928-0.222-3.154-1.831L41.186,2.925  C40.957,1.317,39.748,0,38.499,0c-1.251,0-2.462,1.317-2.687,2.925l-3.729,26.467c-0.227,1.609-1.646,2.434-3.154,1.831L4.14,21.35  c-1.507-0.603-3.252-0.223-3.878,0.838c-0.625,1.066-0.092,2.759,1.184,3.76l20.849,16.381c1.278,1.002,1.278,2.644,0,3.645  L1.445,62.356c-1.276,1.002-1.809,2.796-1.184,3.985c0.626,1.188,2.371,1.667,3.876,1.063l24.567-9.866  c1.509-0.603,2.914,0.218,3.125,1.828l3.547,26.696c0.214,1.607,1.618,2.923,3.121,2.923c1.499,0,2.904-1.315,3.119-2.923  l3.55-26.696c0.211-1.61,1.621-2.431,3.122-1.828l24.164,9.698c1.505,0.606,3.968,0.606,5.476,0l24.16-9.698  c1.504-0.603,2.91,0.218,3.125,1.828l3.55,26.696c0.212,1.607,1.617,2.923,3.115,2.923c1.502,0,2.907-1.315,3.121-2.923  l3.548-26.696c0.217-1.61,1.62-2.431,3.125-1.828l24.568,9.866c1.502,0.604,3.25,0.125,3.876-1.063  C150.743,65.152,150.21,63.358,148.931,62.356z M95.888,46.181L77.528,60.315c-1.285,0.99-3.393,0.99-4.674,0L54.491,46.181  c-1.285-0.992-1.295-2.622-0.02-3.626l18.399-14.493c1.274-1.005,3.363-1.005,4.638,0l18.4,14.493  C97.185,43.559,97.175,45.189,95.888,46.181z"/></svg>
+        <h2 style="display: inline; margin: 10px;">Set Are.na Personal Access Token</h2>
+      </div>
+      <p style="text-align: right;"><a onclick="logseq.hideMainUI()" title="Not now">╳</a></p>
+    </div>
+    <p>Go to <a onclick="logseq.App.openExternalLink('https://dev.are.na/oauth/applications/new')" style="font-style: italic;color: #43a7ff">https://dev.are.na/oauth/applications/new</a> and register a new application (use <span style="font-family: 'Courier New', Courier, monospace;">urn:ietf:wg:oauth:2.0:oob</span> for redirect url) and paste the Personal Access Token below.</p>
+    <input type="text" id="PAT" placeholder="Personal Access Token (e.g. 4865132176e87a94562459352f91321873d773d5d9ede42d2eb6317c6116fc7)"/>
+    <button type="submit" onclick="storeSettings()">Store token</button>
+    <p style="text-align: center; color: rgb(146, 146, 146);"><small>Token is only stored locally in Logseq</small></p>
+  </div>
+  <div class="modal-overlay"></div>
+</div>
+<script>
+  function storeSettings(){
+    let token = document.getElementById('PAT').value
+    if (token.length==64){
+      logseq.updateSettings({arenaToken: document.getElementById('PAT').value.trim()});
+      logseq.hideMainUI();
+    }else{
+      document.getElementById('PAT').value = "";
+      document.getElementById('PAT').focus();
+    }
+  }
+</script>
 <script src="index.ts" type="module"></script>
 </body>
 </html>

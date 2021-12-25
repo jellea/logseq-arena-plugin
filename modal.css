@@ -1,0 +1,50 @@
+body{
+  font-family: Arial, Helvetica, sans-serif;
+  color: white;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+input{
+  border: white 2px solid;
+  padding: 10px;
+  width: 100%;
+  background: transparent;
+  color: white;
+  font-family: monospace;
+}
+
+button{
+  margin-top: 1rem;
+  border: white 2px solid;
+  padding: 10px;
+  width: 100%;
+  background: transparent;
+  color: white;
+  font-weight: bold;
+}
+
+.modal {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 600px;
+  z-index: 1010;
+  background-color: black;
+  border-radius: 5px;
+  padding: 30px;
+}
+
+.modal-overlay{
+  z-index: 1000;
+
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(23, 23, 23, 0.678);
+}
