@@ -33,6 +33,7 @@
     if (token.length==64){
       logseq.updateSettings({arenaToken: document.getElementById('PAT').value.trim()});
       logseq.hideMainUI();
+      logseq.App.showMsg("Token set! Please reload plugin!")
       main();
     }else{
       document.getElementById('PAT').value = "";

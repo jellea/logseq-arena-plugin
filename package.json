@@ -19,6 +19,7 @@
   "dependencies": {
     "@logseq/libs": "^0.0.1-alpha.31",
     "are.na": "git://github.com/absentees/arena-js.git#2c24acb0b640ae8e7cc60bcd0fd277c6977d7408",
+    "lunr": "^2.3.9",
     "parcel-transformer-css-to-string": "^0.9.1"
   },
   "logseq": {

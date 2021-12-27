@@ -2,15 +2,22 @@ import '@logseq/libs'
 import styles from './styles.inline.css';
 import {logo} from './utils';
 import {registerSlashCommands} from './slash-commands';
+// import { initSearch } from './search';
 
 const Arena = require("are.na");
+    
+export function showSearchField(slot){
+  logseq.provideUI({
+    key: 'arena-channel-search',
+    slot, template: `
+    <div class="arena-plugin-wrapper">
+      <input type="text" focus>
+    </div>
+    `,
+  })
+}
 
 export async function main () {
-  // Test auth modal:
-  // logseq.updateSettings({arenaToken:undefined})
-  
-  // console.log(logseq.settings)
-
   let apiToken = logseq.settings.arenaToken
   
   if (!apiToken){
@@ -20,6 +27,8 @@ export async function main () {
     logseq.provideStyle(styles)
 
     let arena = new Arena({accessToken: apiToken});
+    
+    // initSearch(arena)
 
     registerSlashCommands().then(()=>{
       console.log("installed slash commands")
@@ -82,7 +91,7 @@ export async function main () {
         `,
       })
     }
-
+    
     function renderChannel(slot, payload) {
       let [type, channelUrl] = payload.arguments
       let slug;
