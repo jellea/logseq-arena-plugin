@@ -4,10 +4,15 @@ import {registerSlashCommands} from './slash-commands';
 
 const Arena = require("are.na");
 
-async function main () {
+export async function main () {
+  // Test auth modal:
+  // logseq.updateSettings({arenaToken:undefined})
+  
+  // console.log(logseq.settings)
+
   let apiToken = logseq.settings.arenaToken
   
-  if (!apiToken || apiToken.length != 64){
+  if (!apiToken){
     // Open Auth Modal
     logseq.showMainUI()
   }else{
@@ -15,7 +20,9 @@ async function main () {
 
     let arena = new Arena({accessToken: apiToken});
 
-    registerSlashCommands()
+    registerSlashCommands().then(()=>{
+      console.log("installed slash commands")
+    })
 
     // Needed to be able to open external links
     // Use by adding the following html attributes data-url="https://are.na/block/${id}" data-on-click="openLink"
@@ -50,12 +57,24 @@ async function main () {
           `
     }
 
-    function renderErrorMessage(slot){
+    function renderErrorMessage(slot, errorMessage){
       logseq.provideUI({
         key: 'arena-error',
         slot, template: `
         <div class="arena-plugin-wrapper">
-          <h4>Error rendering are.na channel or block</h3>
+          <h4>Error rendering are.na channel or block</h4>
+          ${errorMessage ? `<p>${errorMessage}</p>` : ""}
+        </div>
+        `,
+      })
+    }
+
+    function renderLoadingMessage(slot){
+      logseq.provideUI({
+        key: 'arena-loading',
+        slot, template: `
+        <div class="arena-plugin-wrapper">
+          <h4><i class="ti ti-loader"></i>Loading</h4>
         </div>
         `,
       })
@@ -63,16 +82,24 @@ async function main () {
 
     function renderChannel(slot, payload) {
       let [type, channelUrl] = payload.arguments
+      let slug;
 
-      const regex = /https:\/\/w*\.?are\.na\/.+\/(.+)\/?/gm;
-      let slug = regex.exec(channelUrl.trim())[1]
+      try {
+        const regex = /https:\/\/w*\.?are\.na\/.+\/(.+)\/?/gm;
+        slug = regex.exec(channelUrl.trim())[1]
+      } catch (error) {
+        return renderErrorMessage(slot, "Did you forget to add the channel url?")
+      }
       
       const renderBlockPartial = block => renderBlock(block, payload.uuid)
+
+      renderLoadingMessage(slot)
 
       arena.channel(slug).get().then(channel=>{
         let blocks = channel.contents.map(renderBlockPartial).join("")
         logseq.provideUI({
           key: `arena-channel`,
+          reset: true,
           slot, template: `
           <div class="arena-plugin-wrapper">
             <h3 class="arena-chan-title ${channel.status}">Are.na channel: ${channel.title}</h3>
@@ -86,19 +113,27 @@ async function main () {
           `,
         })
       }).catch((error) => {
-        renderErrorMessage(slot)
+        renderErrorMessage(slot, "Something went wrong getting the channel from Are.na")
       })
     }
 
     function renderSingleBlock(slot, payload){
       let [type, blockUrl] = payload.arguments
+      let slug;
 
-      const regex = /https:\/\/w*\.?are\.na\/block\/(.+)\/?/gm;
-      let slug = regex.exec(blockUrl.trim())[1]
+      try {
+        const regex = /https:\/\/w*\.?are\.na\/block\/(.+)\/?/gm;
+        slug = regex.exec(blockUrl.trim())[1]
+      } catch (error) {
+        return renderErrorMessage(slot, "Did you forget to add a url to a block?")
+      }
+
+      renderLoadingMessage(slot)
 
       arena.block(slug).get().then(block=>{
         logseq.provideUI({
           key: `arena-block`,
+          reset: true,
           slot, template: `
           <div class="arena-plugin-wrapper">
             <h3 class="arena-chan-title">Are.na block: ${block.title}</h3>
@@ -111,7 +146,7 @@ async function main () {
           ,
         })
       }).catch((error) => {
-        renderErrorMessage(slot)
+        renderErrorMessage(slot, "Something went wrong getting the block from Are.na")
       })
     }
 

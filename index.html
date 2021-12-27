@@ -20,9 +20,9 @@
       </div>
       <p style="text-align: right;"><a onclick="logseq.hideMainUI()" title="Not now">╳</a></p>
     </div>
-    <p>Go to <a onclick="logseq.App.openExternalLink('https://dev.are.na/oauth/applications/new')" style="font-style: italic;color: #43a7ff">https://dev.are.na/oauth/applications/new</a> and register a new application (use <span style="font-family: 'Courier New', Courier, monospace;">urn:ietf:wg:oauth:2.0:oob</span> for redirect url) and paste the Personal Access Token below.</p>
+    <p>Go to <a onclick="logseq.App.openExternalLink('https://dev.are.na/oauth/applications/new')" style="font-style: italic;color: #43a7ff">https://dev.are.na/oauth/applications/new</a> and register a new application (use <span style="font-family: 'Courier New', Courier, monospace;">urn:ietf:wg:oauth:2.0:oob</span> for redirect url) and paste the Personal Access Token below. Make sure to reload the plugin after setting the token.</p>
     <input type="text" id="PAT" placeholder="Personal Access Token (e.g. 4865132176e87a94562459352f91321873d773d5d9ede42d2eb6317c6116fc7)"/>
-    <button type="submit" onclick="storeSettings()">Store token</button>
+    <button type="submit" onclick="storeSettings()">Store token (and reload plugin manually!)</button>
     <p style="text-align: center; color: rgb(146, 146, 146);"><small>Token is only stored locally in Logseq</small></p>
   </div>
   <div class="modal-overlay"></div>
@@ -33,6 +33,7 @@
     if (token.length==64){
       logseq.updateSettings({arenaToken: document.getElementById('PAT').value.trim()});
       logseq.hideMainUI();
+      main();
     }else{
       document.getElementById('PAT').value = "";
       document.getElementById('PAT').focus();
