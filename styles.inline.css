@@ -3,7 +3,25 @@ h3.arena-chan-title.private {
 }
 
 h3.arena-chan-title.public {
-    color: #00FF00;
+  color: #00FF00;
+}
+
+.arena-logo {
+  display: inline;
+  width: auto;
+  height: 1rem;
+}
+
+.arena-logo .prim {
+  fill: var(--ls-primary-text-color);
+}
+
+.private .arena-logo .prim {
+  fill: red;
+}
+
+.public .arena-logo .prim {
+  fill: #00FF00;
 }
 
 .arena-plugin-wrapper {

@@ -1,5 +1,6 @@
 import '@logseq/libs'
 import styles from './styles.inline.css';
+import {logo} from '.utils';
 import {registerSlashCommands} from './slash-commands';
 
 const Arena = require("are.na");
@@ -60,6 +61,7 @@ export async function main () {
     function renderErrorMessage(slot, errorMessage){
       logseq.provideUI({
         key: 'arena-error',
+        reset: true,
         slot, template: `
         <div class="arena-plugin-wrapper">
           <h4>Error rendering are.na channel or block</h4>
@@ -72,6 +74,7 @@ export async function main () {
     function renderLoadingMessage(slot){
       logseq.provideUI({
         key: 'arena-loading',
+        reset: true,
         slot, template: `
         <div class="arena-plugin-wrapper">
           <h4><i class="ti ti-loader"></i>Loading</h4>
@@ -102,7 +105,7 @@ export async function main () {
           reset: true,
           slot, template: `
           <div class="arena-plugin-wrapper">
-            <h3 class="arena-chan-title ${channel.status}">Are.na channel: ${channel.title}</h3>
+            <h3 class="arena-chan-title ${channel.status}">${logo} ${channel.title}</h3>
             <p>${!channel.metadata ? '' : channel.metadata.description}</p>
             <p>${channel.length} blocks - <a data-on-click="openLink" data-url="https://are.na/${channel.owner.slug}/${channel.slug}">open in are.na</a></p>
             <p></p>
