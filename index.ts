@@ -1,6 +1,6 @@
 import '@logseq/libs'
 import styles from './styles.inline.css';
-import {logo} from '.utils';
+import {logo} from './utils';
 import {registerSlashCommands} from './slash-commands';
 
 const Arena = require("are.na");
@@ -64,7 +64,7 @@ export async function main () {
         reset: true,
         slot, template: `
         <div class="arena-plugin-wrapper">
-          <h4>Error rendering are.na channel or block</h4>
+          <h4 style="color:red">Error rendering are.na embed</h4>
           ${errorMessage ? `<p>${errorMessage}</p>` : ""}
         </div>
         `,
@@ -139,7 +139,7 @@ export async function main () {
           reset: true,
           slot, template: `
           <div class="arena-plugin-wrapper">
-            <h3 class="arena-chan-title">Are.na block: ${block.title}</h3>
+            <h3 class="arena-chan-title">${logo} ${block.title}</h3>
             <p><a data-on-click="openLink" data-url="${blockUrl}">open in are.na</a></p>
             <div class="arena-block-grid">
               ${renderBlock(block, undefined)}
